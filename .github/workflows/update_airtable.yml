@@ -2,9 +2,9 @@ name: Update airtable from mysql
 on:
   push:
     branches:
-      - master
+      - main
   schedule:
-    - cron: "0 * * * *"
+    - cron: "*/30 * * * *"
 jobs:
   update-airtable:
     runs-on: ubuntu-latest
