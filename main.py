@@ -68,11 +68,12 @@ for record in ids_dict:
     ticket_id = record['fields']['Ticket ID']
     ids_lookup[id] = ticket_id
 ids = list(ids_lookup.keys())
+print(f'deleting {len(ids)} records')
 
 api.batch_delete(base_id, table_name, ids)
 
 insert_q = api.batch_create(base_id, table_name, db_records)
-print(insert_q)
+print(f'adding {len(db_records)} records')
 
 # # if an id exist in the airtable but no longer in the set, add key to Status -> Withdrawn
 # table_ticket_ids = set(ids_lookup.values())
