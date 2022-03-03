@@ -32,16 +32,28 @@ def decodeDict(data):
 #create a new list with columns for airtable
 db_records = []
 for attendee in attendees:
-    id, name, email, airtable_id, s_demographics  = attendee
+    id, name, email, airtable_id, zoom_link, other_link, event_name, event_url, s_demographics  = attendee
+    
+    link = zoom_link
+    if other_link: link = other_link
+
+    if event_url:
+        event_url = 'https://2022.open-data.nyc/event/' + event_url
+    else:
+        event_url = None
+
+    row = {
+            'Ticket ID': id, 
+            'Name': name,
+            'Email': email,
+            'Event Name': event_name,
+            'Video Link': link,
+            'Event Link': event_url
+    }
 
     #needs to be linked to a submission
     if airtable_id:
-        row = {
-                'Ticket ID': id, 
-                'Submission ID': [airtable_id],
-                'Name': name,
-                'Email': email
-            }
+        row['Submission ID'] = [airtable_id]
 
         if s_demographics:
             b_demographics = bytes(s_demographics, 'utf-8')
@@ -50,8 +62,16 @@ for attendee in attendees:
             #{'organization-or-affiliation': 'Student at the University of Chicago', 'age': '25-34', 'i-live-in': 'USA, not New York', 'my-preferred-pronouns-are_eca75a2364a843fb5d85ed5818ccecae': 'She/Her/Hers', 'i-identify-as_105f7af663691149d9219a9e76b1dd94': 'Caucasian/White', 'do-you-work-for-government-are-you-a-government-contractor-or-do-you-volunteer-for-government': 'No'}
             #{'organization-or-affiliation': 'Vera Institute of Justice', 'age': '25-34', 'i-live-in': 'USA, not New York', 'my-preferred-pronouns-are_e6df7b9f0603459eac9488689b73de7b': 'They/Them/Theirs', 'my-preferred-pronouns-are_b108c3de48870cc27ca6ecc49f4bf4d2': 'He/Him/His', 'i-identify-as_f7c6bfaec77ca9e0c9ca7dd0a1ae59aa': 'Hispanic/Latinx', 'do-you-work-for-government-are-you-a-government-contractor-or-do-you-volunteer-for-government': 'Yes, Contractor'}
             row['Demographics'] = dumps(demographics)
+    else:
+        if s_demographics:
+            b_demographics = bytes(s_demographics, 'utf-8')
+            demographics = decodeDict(unserialize(b_demographics))
+            # todo: needs a function to help match keys to columns
+            #{'organization-or-affiliation': 'Student at the University of Chicago', 'age': '25-34', 'i-live-in': 'USA, not New York', 'my-preferred-pronouns-are_eca75a2364a843fb5d85ed5818ccecae': 'She/Her/Hers', 'i-identify-as_105f7af663691149d9219a9e76b1dd94': 'Caucasian/White', 'do-you-work-for-government-are-you-a-government-contractor-or-do-you-volunteer-for-government': 'No'}
+            #{'organization-or-affiliation': 'Vera Institute of Justice', 'age': '25-34', 'i-live-in': 'USA, not New York', 'my-preferred-pronouns-are_e6df7b9f0603459eac9488689b73de7b': 'They/Them/Theirs', 'my-preferred-pronouns-are_b108c3de48870cc27ca6ecc49f4bf4d2': 'He/Him/His', 'i-identify-as_f7c6bfaec77ca9e0c9ca7dd0a1ae59aa': 'Hispanic/Latinx', 'do-you-work-for-government-are-you-a-government-contractor-or-do-you-volunteer-for-government': 'Yes, Contractor'}
+            row['Demographics'] = dumps(demographics)
 
-        db_records.append(row)
+    db_records.append(row)
 
 
 api = Api(os.getenv('AIRTABLE_APIKEY'))
