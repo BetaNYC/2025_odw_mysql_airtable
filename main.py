@@ -72,14 +72,15 @@ ids = list(ids_lookup.keys())
 #delete the ones that no longer exist in MySQL and are still in Airtable
 table_ticket_ids = set(ids_lookup.values())
 mysql_ticket_ids = set([record['Ticket ID'] for record in db_records])
-delete_table_ids = list(table_ticket_ids - mysql_ticket_ids)
-new_table_ids = list(mysql_ticket_ids - table_ticket_ids)
+delete_ticket_ids = list(table_ticket_ids - mysql_ticket_ids)
+new_ticket_ids = list(mysql_ticket_ids - table_ticket_ids)
 
-print(f'deleting {len(delete_table_ids)} records')
+print(f'deleting {len(delete_ticket_ids)} records')
+delete_table_ids = [k for k, v in ids_lookup.items() if v in delete_ticket_ids]
 api.batch_delete(base_id, table_name, delete_table_ids)
 
 #insert new records into airtable 
-new_records = [record for record in db_records if record['Ticket ID'] in new_table_ids]
+new_records = [record for record in db_records if record['Ticket ID'] in new_ticket_ids]
 insert_q = api.batch_create(base_id, table_name, new_records)
 print(f'adding {len(new_records)} records')
 
