@@ -32,18 +32,16 @@ def decodeDict(data):
 #create a new list with columns for airtable
 db_records = []
 for attendee in attendees:
-    id, s_contact, airtable_id, s_demographics  = attendee
+    id, name, email, airtable_id, s_demographics  = attendee
 
     #needs to be linked to a submission
     if airtable_id:
-        row = {'Ticket ID': id, 'Submission ID': [airtable_id]}
-
-        #convert to binary
-        b_contact= bytes(s_contact, 'utf-8')
-        contact = decodeDict(unserialize(b_contact)[0])
-        row['Name'] = contact['name']
-        row['Email'] = contact['email']
-        row['Time'] = contact['time']
+        row = {
+                'Ticket ID': id, 
+                'Submission ID': [airtable_id],
+                'Name': name,
+                'Email': email
+            }
 
         if s_demographics:
             b_demographics = bytes(s_demographics, 'utf-8')
