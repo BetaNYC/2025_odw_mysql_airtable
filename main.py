@@ -68,18 +68,20 @@ for record in ids_dict:
     ticket_id = record['fields']['Ticket ID']
     ids_lookup[id] = ticket_id
 ids = list(ids_lookup.keys())
-print(f'deleting {len(ids)} records')
 
-api.batch_delete(base_id, table_name, ids)
+#delete the ones that no longer exist in MySQL and are still in Airtable
+table_ticket_ids = set(ids_lookup.values())
+mysql_ticket_ids = set([record['Ticket ID'] for record in db_records])
+delete_table_ids = list(table_ticket_ids - mysql_ticket_ids)
+new_table_ids = list(mysql_ticket_ids - table_ticket_ids)
 
-insert_q = api.batch_create(base_id, table_name, db_records)
-print(f'adding {len(db_records)} records')
+print(f'deleting {len(delete_table_ids)} records')
+api.batch_delete(base_id, table_name, delete_table_ids)
 
-# # if an id exist in the airtable but no longer in the set, add key to Status -> Withdrawn
-# table_ticket_ids = set(ids_lookup.values())
-# mysql_ticket_ids = set([record['Ticket ID'] for record in db_records])
-# diff_table_ids = list(table_ticket_ids - mysql_ticket_ids)
+#insert new records into airtable 
+new_records = [record for record in db_records if record['Ticket ID'] in new_table_ids]
+insert_q = api.batch_create(base_id, table_name, new_records)
+print(f'adding {len(new_records)} records')
 
-# for id in diff_table_ids:
-#     print(id)
-
+#print total
+print(f'Total of {len(db_records)}')
