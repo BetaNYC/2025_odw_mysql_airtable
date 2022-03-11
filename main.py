@@ -32,7 +32,7 @@ def decodeDict(data):
 #create a new list with columns for airtable
 db_records = []
 for attendee in attendees:
-    id, name, email, airtable_id, zoom_link, other_link, event_name, event_url, s_demographics  = attendee
+    id, name, email, airtable_id, zoom_link, other_link, event_name, event_url, s_demographics, ticket_name  = attendee
     
     link = zoom_link
     if other_link: link = other_link
@@ -48,7 +48,8 @@ for attendee in attendees:
             'Email': email,
             'Event Name': event_name,
             'Video Link': link,
-            'Event Link': event_url
+            'Event Link': event_url,
+            'Ticket Type': ticket_name
     }
 
     #needs to be linked to a submission
