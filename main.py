@@ -12,7 +12,7 @@ db = mysql.connector.connect(
     host= os.getenv('MYSQL_HOST'),
     user= os.getenv('MYSQL_USER'),
     password= os.getenv('MYSQL_PASSWORD'),
-    database="2022_open_data_nyc_4"
+    database="2023_open_data_nyc"
 )
 
 with open('get_attendees.sql', 'r') as fil:
@@ -74,9 +74,8 @@ for attendee in attendees:
 
     db_records.append(row)
 
-
 api = Api(os.getenv('AIRTABLE_APIKEY'))
-base_id = 'appIeFGnCgzW32sDq'
+base_id = 'appBTbKiW8ZuPRcaF'
 table_name = 'READ ONLY: ODW Attendees'
 
 # get existing ids
