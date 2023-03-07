@@ -4,6 +4,8 @@ import mysql.connector
 from phpserialize import unserialize
 from json import dumps
 from pyairtable import Table, Api
+from playwright.sync_api import sync_playwright
+import re
 
 load_dotenv()
 
@@ -103,3 +105,28 @@ print(f'adding {len(new_records)} records')
 
 #print total
 print(f'Total of {len(db_records)}')
+
+# get existing views counts
+table_name = 'tbltr6uwQ5FLlTGGY'
+event_views = api.all(base_id, table_name, fields=['View your RSVPs']) 
+
+events_views_counts = []
+with sync_playwright() as p:
+    browser = p.firefox.launch()
+    page = browser.new_page()
+    for view in event_views:
+        _id = view['id']
+        if 'View your RSVPs' in view['fields']:
+            link = view['fields']['View your RSVPs']
+            page.goto(link)
+            page.wait_for_timeout(1000)
+            records_text = page.text_content('.selectionCount')
+            numbers = re.findall('[0-9.]+', records_text)
+            if len(numbers) >= 1:
+                row = {'id': _id, 'fields': {'# RSVPs': int(numbers[0])}}
+                events_views_counts.append(row)
+                print(row)
+            else:
+                print('error: ', _id)
+
+api.batch_update(base_id, table_name, events_views_counts)
