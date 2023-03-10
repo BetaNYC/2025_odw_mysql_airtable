@@ -8,6 +8,8 @@ SELECT name_t.post_id , name, email, airtable_id, zoom_link,
 	LEFT JOIN (SELECT post_id, CAST(meta_value AS UNSIGNED) AS event_id FROM wp_8si8bs_postmeta
 		WHERE meta_key = "_tribe_rsvp_event") as event_lookup_t
 		on name_t.post_id = event_lookup_t.post_id 
+	LEFT JOIN (SELECT ID, post_date as ticket_time FROM wp_8si8bs_posts) as event_time
+		on name_t.post_id = event_time.ID 
 	-- not in use, but helpful to get custom field values
 	LEFT JOIN (SELECT post_id, meta_value AS airtable_id 
 		FROM wp_8si8bs_postmeta 
@@ -30,6 +32,6 @@ SELECT name_t.post_id , name, email, airtable_id, zoom_link,
 		CAST(meta_value AS UNSIGNED) as product_id FROM wp_8si8bs_postmeta
 		WHERE meta_key = '_tribe_rsvp_product' ) as rsvp_link
 		on rsvp_link.post_id  = name_t.post_id
-	LEFT JOIN (SELECT ID, post_title as ticket_name, post_date as ticket_time from wp_8si8bs_posts 
+	LEFT JOIN (SELECT ID, post_title as ticket_name from wp_8si8bs_posts 
 		WHERE post_type = 'tribe_rsvp_tickets') as product_name
 		on rsvp_link.product_id = product_name.ID
