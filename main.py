@@ -114,7 +114,7 @@ print(f'Total of {len(db_records)}')
 
 # get existing views counts
 table_name = 'tbltr6uwQ5FLlTGGY'
-event_views = api.all(base_id, table_name, fields=['View your RSVPs']) 
+event_views = api.all(base_id, table_name, fields=['View event RSVPs']) 
 
 events_views_counts = []
 with sync_playwright() as p:
@@ -123,7 +123,7 @@ with sync_playwright() as p:
     for view in event_views:
         _id = view['id']
         if 'View your RSVPs' in view['fields']:
-            link = view['fields']['View your RSVPs']
+            link = view['fields']['View event RSVPs']
             page.goto(link)
             page.wait_for_timeout(1000)
             try:
