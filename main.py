@@ -34,10 +34,15 @@ def decodeDict(data):
 #create a new list with columns for airtable
 db_records = []
 for attendee in attendees:
-    id, name, email, airtable_id, zoom_link, other_link, event_name, event_url, s_demographics, ticket_name  = attendee
+    id, name, email, airtable_id, zoom_link, other_link, event_name, event_url, s_demographics, ticket_name, ticket_time  = attendee
     
     link = zoom_link
     if other_link: link = other_link
+
+    try:
+        time = ticket_time.timestamp()
+    except:
+        time = 0
 
     if event_url:
         event_url = 'https://2023.open-data.nyc/event/' + event_url
@@ -51,7 +56,8 @@ for attendee in attendees:
             'Event Name': event_name,
             'Video Link': link,
             'Event Link': event_url,
-            'Ticket Type': ticket_name
+            'Ticket Type': ticket_name,
+            'Ticket Time': time
     }
 
     #needs to be linked to a submission
