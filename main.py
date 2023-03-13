@@ -44,11 +44,6 @@ for attendee in attendees:
     except:
         ticket_time_float = 0
 
-    try:
-        event_time_float = event_time.timestamp()
-    except:
-        event_time_float = 0
-
     if event_url:
         event_url = 'https://2023.open-data.nyc/event/' + event_url
     else:
@@ -59,7 +54,7 @@ for attendee in attendees:
             'Name': name,
             'Email': email,
             'Event Name': event_name,
-            'Event Timestamp': event_time_float,
+            'Event Date/Time String': event_time, #this is a string..
             'Event Location': event_location,
             'Video Link': link,
             'Event Link': event_url,
