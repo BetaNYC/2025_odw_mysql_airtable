@@ -122,7 +122,7 @@ with sync_playwright() as p:
     page = browser.new_page()
     for view in event_views:
         _id = view['id']
-        if 'View your RSVPs' in view['fields']:
+        if 'View event RSVPs' in view['fields']:
             link = view['fields']['View event RSVPs']
             page.goto(link)
             page.wait_for_timeout(1000)
