@@ -1,5 +1,5 @@
 SELECT name_t.post_id , name, email, airtable_id, zoom_link, 
-	other_link, eventName, eventUrl, survey, ticket_name, ticket_time FROM 
+	other_link, eventName, eventDt, eventLocation, eventUrl, survey, ticket_name, ticket_time FROM 
 	(SELECT post_id, meta_value as Name FROM wp_8si8bs_postmeta
 		WHERE meta_key = "_tribe_rsvp_full_name") as name_t
 	LEFT JOIN (SELECT post_id, meta_value as email FROM wp_8si8bs_postmeta
@@ -25,6 +25,17 @@ SELECT name_t.post_id , name, email, airtable_id, zoom_link,
 		on other_t.post_id = event_lookup_t.event_id 	
 	LEFT JOIN (SELECT ID, post_title as eventName, post_name as eventURL from wp_8si8bs_posts) as posts
 		on posts.ID = event_lookup_t.event_id 
+	LEFT JOIN (SELECT post_id, meta_value AS eventDt FROM wp_8si8bs_postmeta
+		WHERE meta_key = "_EventStartDate") as event_start
+	 	on posts.ID = event_start.post_id 
+	-- get venue info
+	LEFT JOIN (SELECT post_id, meta_value AS venueId FROM wp_8si8bs_postmeta
+		WHERE meta_key = "_EventVenueID") as venue
+	 	on posts.ID = venue.post_id
+	LEFT JOIN (SELECT post_id, meta_value AS eventLocation FROM wp_8si8bs_postmeta
+		WHERE meta_key = "_VenueAddress") as event_loc
+	 	on venue.venueId = event_loc.post_id
+	-- ticket info
 	LEFT JOIN (SELECT post_id, meta_value AS survey FROM wp_8si8bs_postmeta
 		WHERE meta_key = "_tribe_tickets_meta") as survey_t
 		on name_t.post_id = survey_t.post_id 
