@@ -1,5 +1,6 @@
 name: Update airtable from mysql
 on:
+  workflow_dispatch:  # This enables manual triggering from the GitHub UI
   push:
     branches:
       - main
