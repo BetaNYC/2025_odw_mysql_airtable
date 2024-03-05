@@ -85,7 +85,7 @@ for attendee in attendees:
 
 api = Api(os.getenv('AIRTABLE_APIKEY'))
 base_id = 'appjxme959SST9NnX'
-table_name = 'tblpXMo1UtS1IFGKC'
+table_name = 'tblJJwefzsLKzuLrO'
 
 # get existing ids
 ids_dict = api.all(base_id, table_name, fields=['Ticket ID']) #needs formatting
