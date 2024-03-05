@@ -14,7 +14,7 @@ db = mysql.connector.connect(
     host= os.getenv('MYSQL_HOST'),
     user= os.getenv('MYSQL_USER'),
     password= os.getenv('MYSQL_PASSWORD'),
-    database="2023_open_data_nyc"
+    database="2024_open_data_nyc"
 )
 
 with open('get_attendees.sql', 'r') as fil:
@@ -45,7 +45,7 @@ for attendee in attendees:
         ticket_time_float = 0
 
     if event_url:
-        event_url = 'https://2023.open-data.nyc/event/' + event_url
+        event_url = 'https://2024.open-data.nyc/event/' + event_url
     else:
         event_url = None
 
