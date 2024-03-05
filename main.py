@@ -84,7 +84,7 @@ for attendee in attendees:
     db_records.append(row)
 
 api = Api(os.getenv('AIRTABLE_APIKEY'))
-base_id = 'appBTbKiW8ZuPRcaF'
+base_id = 'appjxme959SST9NnX'
 table_name = 'READ ONLY: ODW Attendees'
 
 # get existing ids
