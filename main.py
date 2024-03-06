@@ -14,7 +14,7 @@ db = mysql.connector.connect(
     host= os.getenv('MYSQL_HOST'),
     user= os.getenv('MYSQL_USER'),
     password= os.getenv('MYSQL_PASSWORD'),
-    database="2024_open_data_nyc"
+    database="2024_open_data_nyc_1"
 )
 
 with open('get_attendees.sql', 'r') as fil:
