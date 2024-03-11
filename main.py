@@ -6,15 +6,30 @@ from json import dumps
 from pyairtable import Table, Api
 from playwright.sync_api import sync_playwright
 import re
+from sshtunnel import SSHTunnelForwarder
 
 load_dotenv()
+
+ssh_host = os.getenv('SSH_HOST')
+ssh_username = os.getenv('SSH_HOST')
+ssh_password = os.getenv('SSH_PASSWORD')
+
+tunnel = SSHTunnelForwarder(
+    (ssh_host, 22),  # SSH server endpoint
+    ssh_username=ssh_username,
+    ssh_password=ssh_password,  # or use ssh_pkey and ssh_private_key_password if using RSA keys
+    remote_bind_address=(db_host, db_port)  # MySQL server endpoint
+)
+
+tunnel.start()
 
 #read from the database
 db = mysql.connector.connect(
     host= os.getenv('MYSQL_HOST'),
     user= os.getenv('MYSQL_USER'),
     password= os.getenv('MYSQL_PASSWORD'),
-    database="2024_open_data_nyc_1"
+    database="2024_open_data_nyc_1",
+    port = tunnel.local_bind_port
 )
 
 with open('get_attendees.sql', 'r') as fil:
@@ -113,6 +128,8 @@ print(f'adding {len(new_records)} records')
 
 #print total
 print(f'Total of {len(db_records)}')
+
+tunnel.close()
 
 # # get existing views counts
 # table_name = 'tbltr6uwQ5FLlTGGY'
