@@ -11,7 +11,7 @@ from sshtunnel import SSHTunnelForwarder
 load_dotenv()
 
 ssh_host = os.getenv('SSH_HOST')
-ssh_username = os.getenv('SSH_HOST')
+ssh_username = os.getenv('SSH_USERNAME')
 ssh_password = os.getenv('SSH_PASSWORD')
 
 tunnel = SSHTunnelForwarder(
