@@ -29,7 +29,7 @@ db = mysql.connector.connect(
     user= os.getenv('MYSQL_USER'),
     password= os.getenv('MYSQL_PASSWORD'),
     database="2024_open_data_nyc_1",
-    port = tunnel.remote_bind_port
+    port = tunnel.local_bind_port
 )
 
 with open('get_attendees.sql', 'r') as fil:
