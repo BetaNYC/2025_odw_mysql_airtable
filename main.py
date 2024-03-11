@@ -18,7 +18,7 @@ tunnel = SSHTunnelForwarder(
     (ssh_host, 22),  # SSH server endpoint
     ssh_username=ssh_username,
     ssh_password=ssh_password,  # or use ssh_pkey and ssh_private_key_password if using RSA keys
-    remote_bind_address=(db_host, db_port)  # MySQL server endpoint
+    remote_bind_address=(os.getenv('MYSQL_HOST'), 3306)  # MySQL server endpoint
 )
 
 tunnel.start()
