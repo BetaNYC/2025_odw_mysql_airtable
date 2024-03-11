@@ -10,4 +10,4 @@ python-dotenv==0.19.2
 requests==2.27.1
 setuptools==56.0.0
 urllib3==1.26.8
-mysql-connector-python sshtunnel
+sshtunnel
