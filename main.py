@@ -14,23 +14,34 @@ ssh_host = os.getenv('SSH_HOST')
 ssh_username = os.getenv('SSH_USERNAME')
 ssh_password = os.getenv('SSH_PASSWORD')
 
-tunnel = SSHTunnelForwarder(
-    (ssh_host, 22),  # SSH server endpoint
-    ssh_username=ssh_username,
-    ssh_password=ssh_password,  # or use ssh_pkey and ssh_private_key_password if using RSA keys
-    remote_bind_address=(os.getenv('MYSQL_HOST'), 3306)  # MySQL server endpoint
-)
+mysql_host = os.getenv('MYSQL_HOST') # Use localhost because we are forwarding through SSH
+mysql_user = os.getenv('MYSQL_USER')
+mysql_pw = os.getenv('MYSQL_PASSWORD')
+mysqldb = "2024_open_data_nyc_1"
 
+# Setting up SSH tunnel
+tunnel = SSHTunnelForwarder(
+    (ssh_host, 22), # SSH server endpoint
+    ssh_username=ssh_username,
+    ssh_password=ssh_password,
+    remote_bind_address=(mysql_host, 3306), # Remote MySQL server endpoint
+    local_bind_address=('0.0.0.0', 10022) # Local forwarding port (choose any unused port)
+)
+    
 tunnel.start()
 
-#read from the database
+print("SSH tunnel established.")
+
+# Now we can connect to MySQL through the tunnel
 db = mysql.connector.connect(
-    host= os.getenv('MYSQL_HOST'),
-    user= os.getenv('MYSQL_USER'),
-    password= os.getenv('MYSQL_PASSWORD'),
-    database="2024_open_data_nyc_1",
-    port = tunnel.local_bind_port
+    host='127.0.0.1', # Connect to the local end of the tunnel
+    user=mysql_user,
+    password=mysql_pw,
+    database=mysqldb,
+    port=tunnel.local_bind_port # Use the dynamically assigned local port
 )
+
+print("Connected to MySQL database.")
 
 with open('get_attendees.sql', 'r') as fil:
     query = fil.read()
@@ -39,6 +50,9 @@ cursor = db.cursor()
 cursor.execute(query)
 attendees = cursor.fetchall()
 
+cursor.close()
+db.close()
+tunnel.close()
 
 def decodeDict(data):
     if isinstance(data, bytes): return data.decode('utf-8')
@@ -128,8 +142,6 @@ print(f'adding {len(new_records)} records')
 
 #print total
 print(f'Total of {len(db_records)}')
-
-tunnel.close()
 
 # # get existing views counts
 # table_name = 'tbltr6uwQ5FLlTGGY'
