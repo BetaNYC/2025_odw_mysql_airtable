@@ -17,7 +17,7 @@ ssh_password = os.getenv('SSH_PASSWORD')
 mysql_host = os.getenv('MYSQL_HOST') # Use localhost because we are forwarding through SSH
 mysql_user = os.getenv('MYSQL_USER')
 mysql_pw = os.getenv('MYSQL_PASSWORD')
-mysqldb = "2024_open_data_nyc_1"
+mysqldb = "2025_open_data_nyc_1"
 
 # Setting up SSH tunnel
 tunnel = SSHTunnelForwarder(
