@@ -46,4 +46,4 @@ SELECT name_t.post_id , name, email, airtable_id, zoom_link,
 	LEFT JOIN (SELECT ID, post_title as ticket_name from wp_2kamgb_posts 
 		WHERE post_type = 'tribe_rsvp_tickets') as product_name
 		on rsvp_link.product_id = product_name.ID
-	WHERE eventName IS NOT NULL
+	WHERE eventName IS NOT NULL AND YEAR(eventDt) = 2025
