@@ -74,7 +74,7 @@ for attendee in attendees:
         ticket_time_float = 0
 
     if event_url:
-        event_url = 'https://2024.open-data.nyc/event/' + event_url
+        event_url = 'https://2025.open-data.nyc/event/' + event_url
     else:
         event_url = None
 
